@@ -7,13 +7,28 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Dragndropper</title>
 	<link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/loader.css">
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
-	<canvas width="1600" height="900" id="canvas"></canvas>
+    <div class="container" id="loadingScreen">
+        <div id="loader">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </div>
 
-	<script src="scripts/graphics.js"></script>
+	<canvas id="canvas"></canvas>
+
+    <script src="scripts/parser.js"></script>
+	<script src="scripts/gfx.js"></script>
 	<script src="scripts/flow.js"></script>
 </body>
 
