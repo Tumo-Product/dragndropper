@@ -5,6 +5,8 @@ let offsetX = BB.left, offsetY = BB.top;
 let dragOk = false;
 let startX, startY;
 
+let areaSize = 90;
+
 let circles = [];
 
 const mouseDown = (e) => {
@@ -17,9 +19,11 @@ const mouseDown = (e) => {
 
     dragOk = false;
     for (let circle of circles) {
-        if (intersects(mx, my, circle)) {
-            dragOk = true;
-            circle.dragging = true;
+        if (!circle.locked) {
+            if (intersects(mx, my, circle)) {
+                dragOk = true;
+                circle.dragging = true;
+            }
         }
     }
 
@@ -28,7 +32,6 @@ const mouseDown = (e) => {
 }
 
 const intersects = (x, y, circle) => {
-    console.log(circle);
     if (x > circle.x && x < circle.x + circle.width && y > circle.y && y < circle.y + circle.height) return true;
     else return false;
 }
@@ -43,12 +46,19 @@ const mouseUp = (e) => {
     let my = parseInt(e.clientY - offsetY);
 
     for (let circle of circles) {
-        circle.dragging = false;
+        if (circle.dragging) {
+            circle.dragging = false;
 
-        if (intersects(mx, my, {x: circle.stick.x, y: circle.stick.y, width: 100, height: 100})) { // TODO: Fix sticking behaviour
-            gfx.redrawImage(circle.img, circle.stick.x, circle.stick.y, circle.width, circle.height);
-        } else {
-            gfx.redrawImage(circle.img, circle.x, circle.y, circle.width, circle.height);
+            if (!circle.locked) {
+                if (intersects(mx, my, { x: circle.stick.x, y: circle.stick.y, width: areaSize, height: areaSize })) {
+                    circle.x = circle.stick.x;
+                    circle.y = circle.stick.y;
+                    gfx.redrawImage(circle.img, circle.stick.x, circle.stick.y, circle.width, circle.height, circles);
+                    circle.locked = true;
+                } else {
+                    gfx.redrawImage(circle.img, circle.x, circle.y, circle.width, circle.height, circles);
+                }
+            }
         }
     }
 }
@@ -64,10 +74,10 @@ const mouseMove = (e) => {
         let dy = my - startY;
 
         for (let circle of circles) {
-            if (circle.dragging) {
+            if (circle.dragging && !circle.locked) {
                 let newX = circle.x + dx;
                 let newY = circle.y + dy;
-                gfx.redrawImage(circle.img, newX, newY, circle.width, circle.height);
+                gfx.redrawImage(circle.img, newX, newY, circle.width, circle.height, circles);
             }
         }
     }
@@ -80,14 +90,16 @@ const onPageLoad = async () => {
     let data = await parser.dataFetch("../imageSets.json");
 
     for (let set of data.sets) {
-        let bgInfo = await gfx.drawImage(set.background, undefined, undefined, true, 0.35);
+        let bgInfo = await gfx.drawBg(set.background, 0.35);
 
         let icons = set.icons;
         for (let i = 0; i < icons.length; i++) {
-            circles.push(await gfx.drawImage(icons[i].img, bgInfo.x, bgInfo.y + i * 90, false, 0.05));
+            circles.push(await gfx.drawImage(icons[i].img, bgInfo.x, bgInfo.y + i * areaSize, 0.05));
             circles[i].stick = icons[i].stick;
+            circles[i].locked = false;
         }
     }
+    console.log(circles);
 
     gfx.toggleLoadingScreen();
 
