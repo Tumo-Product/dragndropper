@@ -4,17 +4,19 @@
             "background": "images/background.jpg",
             "icons": [
                 {
+                    "name": "circle",
                     "img": "images/circle.png",
                     "stick": {
-                        "x": 795,
-                        "y": 673
+                        "x": 452,
+                        "y": 44
                     }
                 },
                 {
+                    "name": "circle2",
                     "img": "images/circle2.png",
                     "stick": {
-                        "x": 621,
-                        "y": 776
+                        "x": 480,
+                        "y": 528
                     }
                 }
             ]
