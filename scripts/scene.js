@@ -19,6 +19,7 @@ class MainScene extends Phaser.Scene {
         context = this;
         let bg = this.add.image(width / 2, height / 2, 'bg').setOrigin(0.5);
         let circles = [];
+		let lockedIndex = 0;
 
         for (let i = 0; i < icons.length; i++) {
             let icon = icons[i];
@@ -48,15 +49,25 @@ class MainScene extends Phaser.Scene {
 
             let dist = Phaser.Math.Distance.Between(gameObject.x, gameObject.y, gameObject.stick.x, gameObject.stick.y);
 
-            if (dist < 60 || dist == 0) {
+            if (dist < 60) {
                 gameObject.x = gameObject.stick.x;
                 gameObject.y = gameObject.stick.y;
 
                 gameObject.input.draggable = false;
+				lockedIndex++;
             } else {
                 gameObject.x = gameObject.startingPos.x;
                 gameObject.y = gameObject.startingPos.y;
             }
+
+			if (lockedIndex  == circles.length) {
+				console.log("all locked");
+
+				$(function() {
+					$(".front").addClass("frontFlip");
+					$(".back").addClass("backFlip");
+				});
+			}
         });
     }
 }

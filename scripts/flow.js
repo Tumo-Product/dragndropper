@@ -1,6 +1,7 @@
 let bgPath = "images/background.jpg";
 let icons = [];
 let context;
+let game;
 
 const onPageLoad = async () => {
     let data = await parser.dataFetch("../imageSets.json");
@@ -17,10 +18,10 @@ const onPageLoad = async () => {
     let config = {
         type: Phaser.AUTO,
         backgroundColor: '#2dab2d',
-        parent: 'phaser',
+        parent: 'canvas',
         scale: {
-            mode: Phaser.Scale.FIT,
-            _parent: 'phaser',
+            // mode: Phaser.Scale.FIT,
+            _parent: 'canvas',
             width: width,
             height: height
         },
@@ -28,7 +29,7 @@ const onPageLoad = async () => {
         transparent: true
     };
     
-    let game = new Phaser.Game(config);
+    game = new Phaser.Game(config);
 }
 
 $(onPageLoad());
